@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { urlFor } from '../sanity'
 import { MinusCircleIcon, PlusCircleIcon, } from 'react-native-heroicons/solid'
 import { useDispatch, useSelector } from 'react-redux'
-import { addToBasket, selectBasketItemsById } from '../features/basketSlice'
+import { addToBasket, removeFromBasket, selectBasketItemsById } from '../features/basketSlice'
 
 const DishRow = ({ id, name, description, price, image }) => {
     const [isPressed, setIsPressed] = useState(false)
@@ -12,6 +12,13 @@ const DishRow = ({ id, name, description, price, image }) => {
 
     const addItemToBasket = () => {
         dispatch(addToBasket({ id, name, description, price, image }))
+    }
+
+    const removeItemfromBasket = () => {
+
+        if (!items.length > 0) return
+
+        dispatch(removeFromBasket({ id }))
     }
 
     return (
@@ -43,10 +50,12 @@ const DishRow = ({ id, name, description, price, image }) => {
             {isPressed && (
                 <View className='bg-white px-4'>
                     <View className='flex-row items-center'>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            disabled={!items.length}
+                            onPress={removeItemfromBasket}>
                             <MinusCircleIcon
-                                color={'#00CCBB'}
-                                // color={items.length > 0 ? '#00CCBB' : 'gray'}
+                                // color={'#00CCBB'}
+                                color={items.length > 0 ? '#00CCBB' : 'gray'}
                                 size={40}
                             />
                         </TouchableOpacity>
@@ -56,7 +65,6 @@ const DishRow = ({ id, name, description, price, image }) => {
                         <TouchableOpacity onPress={addItemToBasket}>
                             <PlusCircleIcon
                                 color={'#00CCBB'}
-                                // color={items.length > 0 ? '#00CCBB' : 'gray'}
                                 size={40}
                             />
                         </TouchableOpacity>
